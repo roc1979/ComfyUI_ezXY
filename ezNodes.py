@@ -326,7 +326,11 @@ class IterationDriver:
     
     def iterate(self, iterations):
         return (list(range(0,iterations)), iterations,)
-
+def GetFloatPlaces(number):
+    i=0
+    while (str(10**i*number).find(".0")!=len(str(10**i*number))-2):
+        i+=1
+    return i
 
 # %% jupyter={"source_hidden": true}
 class NumbersToList:
@@ -349,7 +353,9 @@ class NumbersToList:
 
     CATEGORY = "ezXY/list generation"
     
+    
     def numbersToList(self, numbers):
+        
         # Start by sanitizing input
         valid_chars = "0123456789.;:-+*/%"
         # For each character in numbers, check if it is valid. If yes, put into new string
@@ -384,8 +390,15 @@ class NumbersToList:
                     range_step = float(eval(ranges[2], {}))
                 else:
                     range_step = 1
-
-                chunks[i] = np.arange(range_min, range_max+1, range_step).tolist()
+               
+                placeNumber=GetFloatPlaces(abs(range_step))
+                range_max=range_max*10**placeNumber+1
+                range_min=range_min*10**placeNumber
+                range_step=range_step*10**placeNumber
+                   
+                chunks[i] = np.arange(range_min, range_max, range_step).tolist()
+                for intNum in range(0, len(chunks[i])):
+                   chunks[i][ intNum ]= chunks[i][ intNum ]/10**placeNumber
 
             else:
                 chunks[i] = float(eval(chunk, {}))
